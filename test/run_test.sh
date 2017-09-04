@@ -2,7 +2,7 @@
 set -e -o pipefail
 
 echo "Adding sqlite"
-apk add sqlite
+apk --no-cache add sqlite
 
 echo "Creating sqlite db"
 sqlite3 liquibase.db .databases

@@ -7,7 +7,8 @@ ENV LIQUIBASE_CLASSPATH=${LIQUIBASE_CLASSPATH:-/opt/jdbc/sqlite-jdbc.jar}\
     LIQUIBASE_DRIVER=${LIQUIBASE_DRIVER:-org.sqlite.JDBC}\
     LIQUIBASE_URL=${LIQUIBASE_URL:-'jdbc:sqlite:${DATABASE}'}
 
-RUN cd /opt/jdbc;\
+RUN set -e -o pipefail;\
+    cd /opt/jdbc;\
     chmod +x test/run_test.sh;\
     jarfile=sqlite-jdbc-${sqlite_jdbc_version}.jar;\
     curl -SOLs ${sqlite_jdbc_download_url}/${jarfile};\

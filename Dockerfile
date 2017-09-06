@@ -1,4 +1,5 @@
 FROM kilna/liquibase
+LABEL maintainer="Kilna kilna@kilna.com"
 
 ARG sqlite_jdbc_version=3.20.0
 ARG sqlite_jdbc_download_url=https://bitbucket.org/xerial/sqlite-jdbc/downloads

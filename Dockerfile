@@ -8,10 +8,10 @@ ENV LIQUIBASE_CLASSPATH=${LIQUIBASE_CLASSPATH:-/opt/jdbc/sqlite-jdbc.jar}\
     LIQUIBASE_DRIVER=${LIQUIBASE_DRIVER:-org.sqlite.JDBC}\
     LIQUIBASE_URL=${LIQUIBASE_URL:-'jdbc:sqlite:${DATABASE}'}
 
-COPY test/ /opt/test/
+COPY test/ /opt/test_liquibase_sqlite/
 RUN set -e -o pipefail;\
     cd /opt/jdbc;\
-    chmod +x /opt/test/run_test.sh;\
+    chmod +x /opt/test_liquibase_sqlite/run_test.sh;\
     jarfile=sqlite-jdbc-${sqlite_jdbc_version}.jar;\
     curl -SOLs ${sqlite_jdbc_download_url}/${jarfile};\
     ln -s ${jarfile} sqlite-jdbc.jar;\

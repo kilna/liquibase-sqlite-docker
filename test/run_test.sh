@@ -8,5 +8,5 @@ echo "Creating sqlite db"
 sqlite3 liquibase .databases
 
 echo "Applying changelog"
-liquibase --changeLogFile=/opt/test/changelog.xml updateTestingRollback
+liquibase --changeLogFile=/opt/test_liquibase_sqlite/changelog.xml updateTestingRollback
 

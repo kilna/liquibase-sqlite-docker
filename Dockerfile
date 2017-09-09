@@ -14,6 +14,5 @@ RUN set -e -o pipefail;\
     chmod +x /opt/test_liquibase_sqlite/run_test.sh;\
     jarfile=sqlite-jdbc-${sqlite_jdbc_version}.jar;\
     curl -SOLs ${sqlite_jdbc_download_url}/${jarfile};\
-    ln -s ${jarfile} sqlite-jdbc.jar;\
-    set | grep -F LIQUIBASE_
+    ln -s ${jarfile} sqlite-jdbc.jar;
 

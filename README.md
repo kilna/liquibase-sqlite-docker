@@ -5,7 +5,9 @@
 [![](https://img.shields.io/docker/stars/kilna/liquibase-sqlite.svg?style=plastic)](https://hub.docker.com/r/kilna/liquibase-sqlite/)
 [![](https://img.shields.io/badge/docker_build-automated-blue.svg?style=plastic)](https://cloud.docker.com/swarm/kilna/repository/docker/kilna/liquibase-sqlite/builds)
 
-**A lightweight Docker for running [Liquibase](https://www.liquibase.org) with [SQLite](http://www.sqlite.org) databases** - DockerHub: [liquibase-sqlite](https://hub.docker.com/r/kilna/liquibase-sqlite/) - GitHub: [liquibase-sqlite-docker](https://github.com/kilna/liquibase-sqlite-docker)
+**A lightweight Docker for running [Liquibase](https://www.liquibase.org) with [SQLite](http://www.sqlite.org) databases**
+
+DockerHub: [liquibase-sqlite](https://hub.docker.com/r/kilna/liquibase-sqlite/) - GitHub: [liquibase-sqlite-docker](https://github.com/kilna/liquibase-sqlite-docker)
 
 # Usage
 
@@ -62,7 +64,7 @@ In order to create the liquibase.properties file, it uses the follow environment
 | LIQUIBASE_URL        | JDBC URL for connection | jdbc:sqlite:${DATABASE} |
 | LIQUIBASE_DEBUG      | If set to 'yes', when _docker run_ is executed, will show the values of all LIQUIBASE_* environment variables and describes any substitutions performed on _liquibase.properties_ | _unset_ |
 
-The generated _liquibase.properties_ file is loaded into the default working dir _/workspace_ (which is also shared as a docker volume). The _/workspace/liquibase.properties_ file will have any variables substituted each time a 'docker run' command is performed...  so you can load your own _/workspace/liquibase.properties_ file and put `${HOST}` in it, and it will be replaced with the LIQUIBASE_HOST environment variable.
+The generated _liquibase.properties_ file is loaded into the default working dir _/workspace_ (which is also shared as a docker volume). The _/workspace/liquibase.properties_ file will have any variables substituted each time a 'docker run' command is performed...  so you can load your own _/workspace/liquibase.properties_ file and put `${DATABASE}` in it, and it will be replaced with the LIQUIBASE_DATABASE environment variable.
 
 If you want to see what the contents of the generated _liquibase.properties_ file are, you can:
 

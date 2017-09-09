@@ -1,6 +1,10 @@
 version: '3'
 services:
   sut:
-    build: .
+    env_file:
+      - .env
+    build:
+      context: .
+      args:
+        jdbc_driver_version: ${jdbc_driver_version}
     command: /opt/test_liquibase_sqlite/run_test.sh
-

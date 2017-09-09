@@ -1,2 +1,72 @@
 # liquibase-sqlite-docker
-Docker for applying Liquibase changes against SQLite databases
+
+[![](https://images.microbadger.com/badges/image/kilna/liquibase-sqlite.svg)](https://microbadger.com/images/kilna/liquibase-sqlite)
+[![](https://img.shields.io/docker/pulls/kilna/liquibase-sqlite.svg?style=plastic)](https://hub.docker.com/r/kilna/liquibase-sqlite/)
+[![](https://img.shields.io/docker/stars/kilna/liquibase-sqlite.svg?style=plastic)](https://hub.docker.com/r/kilna/liquibase-sqlite/)
+[![](https://img.shields.io/badge/docker_build-automated-blue.svg?style=plastic)](https://cloud.docker.com/swarm/kilna/repository/docker/kilna/liquibase-sqlite/builds)
+
+**A lightweight Docker for running [Liquibase](https://www.liquibase.org) with [SQLite](http://www.sqlite.org) databases** - DockerHub: [liquibase-sqlite](https://hub.docker.com/r/kilna/liquibase-sqlite/) - GitHub: [liquibase-sqlite-docker](https://github.com/kilna/liquibase-sqlite-docker)
+
+# Usage
+
+## Using your own derived Dockerfile
+
+You can use this image by creating your own `Dockerfile` which inherits using a FROM line:
+
+```
+FROM kilna/liquibase-sqlite-docker
+ENV LIQUIBASE_DATABASE=dbname.db
+COPY changelog.xml /workspace
+COPY dbname.db /workspace
+```
+
+Make sure to create an appropriate [changelog.xml](http://www.liquibase.org/documentation/xml_format.html), and a SQLite 3 database names _dbname.db_ in the same directory as your Dockerfile.
+
+Then you can build your derived Dockerfile to an image tagged 'changelog-image':
+
+```
+$ docker build --tag changelog-image .
+```
+
+Any time you make changes to the example project, you'll need to re-run the `docker build` command above, or you can using docker volumes as described below to sync local filesystem changes into the container. To run liquibase using the new image you can:
+
+```
+$ docker run changelog-image liquibase updateTestingRollback
+```
+
+Since the working directory within the container is /workspace, and since the entrypoint generates a a liquibase.properties file using the provided environment variables, it will know to look for _changelog.xml_ by default and apply the change.  See the environment variables below to change this behavior.
+
+## Using the image directly with a mounted docker volume
+
+If you'd like to apply a changelog to a SQLite database without deriving your own container, run the contiainer
+appropriate to your database like so... where _/local/path/to/changelog/_ is the directory where a valid [changelog.xml](http://www.liquibase.org/documentation/xml_format.html) exists:
+
+```
+$ docker run -e -e LIQUIBASE_DATABASE=dbname.db -v /local/path/to/changelog/:/workspace/ \
+    kilna/liquibase-sqlite  liquibase updateTestingRollback
+```
+
+# Environment Variables and liquibase.properties
+
+This docker image has a working Liquibase executable in the path, and an entrypoint which auto-generates a [liquibase.properties](http://www.liquibase.org/documentation/liquibase.properties.html) file.
+
+In order to create the liquibase.properties file, it uses the follow environment variables when the image is started with 'docker run':
+
+| Environment Variable | Purpose | Default |
+|----------------------|---------|---------|
+| LIQUIBASE_DATABASE   | Database filename | liquibase |
+| LIQUIBASE_CHANGELOG  | Default changelog filename to use | changelog.xml |
+| LIQUIBASE_LOGLEVEL   | Log level as defined by Liquibase <br> _Valid values: debug, info, warning, severe, off_ | info |
+| LIQUIBASE_CLASSPATH  | JDBC driver filename | /opt/jdbc/sqlite-jdbc.jar |
+| LIQUIBASE_DRIVER     | JDBC object path | org.sqlite.JDBC |
+| LIQUIBASE_URL        | JDBC URL for connection | jdbc:sqlite:${DATABASE} |
+| LIQUIBASE_DEBUG      | If set to 'yes', when _docker run_ is executed, will show the values of all LIQUIBASE_* environment variables and describes any substitutions performed on _liquibase.properties_ | _unset_ |
+
+The generated _liquibase.properties_ file is loaded into the default working dir _/workspace_ (which is also shared as a docker volume). The _/workspace/liquibase.properties_ file will have any variables substituted each time a 'docker run' command is performed...  so you can load your own _/workspace/liquibase.properties_ file and put `${HOST}` in it, and it will be replaced with the LIQUIBASE_HOST environment variable.
+
+If you want to see what the contents of the generated _liquibase.properties_ file are, you can:
+
+```
+$ docker run image-name cat liquibase.properties
+```
+

@@ -36,9 +36,11 @@ fi
 git push origin ":v$version" || true
 
 header "Git Tagging $project $version"
-git add .env
-git commit -m "Updating .env with version $version" || true
-git push origin
+if [[ `git status` != *'working tree clean'* ]]; then
+  git add .env
+  git commit -m "Updating .env with version $version" || true
+  git push origin
+fi
 git tag -m "From $driver_pretty $version" "v$version"
 git push origin "v$version"
 

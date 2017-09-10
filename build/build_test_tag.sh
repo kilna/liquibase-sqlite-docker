@@ -37,7 +37,7 @@ git push origin ":v$version" || true
 
 header "Git Tagging $project $version"
 git add .env
-git commit -m "Updating .env with version $version"
+git commit -m "Updating .env with version $version" || true
 git push origin
 git tag -m "From $driver_pretty $version" "v$version"
 git push origin "v$version"

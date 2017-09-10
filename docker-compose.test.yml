@@ -7,4 +7,5 @@ services:
       context: .
       args:
         jdbc_driver_version: ${jdbc_driver_version}
+    image: liquibase-sqlite:build
     command: /opt/test_liquibase_sqlite/run_test.sh

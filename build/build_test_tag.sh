@@ -10,6 +10,8 @@ latest_version=$(tail -1 build/versions.txt)
 version="${1:-$latest_version}"
 
 git fetch -p origin
+git remote prune origin
+git pull
 [[ "$dockerhub_user" == '' ]] && echo "Must be logged into dockerhub with docker login" >&2 && exit 180
 [[ "$github_token" == '' ]] && echo "Environment variable github_token must be set" >&2 && exit 181
 
@@ -24,19 +26,22 @@ docker-compose -f docker-compose.test.yml down --rmi all
 header "Building $project $version"
 docker build --tag "$project:build-$version" --build-arg jdbc_driver_version="$version" .
 
-header "Git Tagging $project $version"
-git fetch -p origin
-git remote prune origin
-git pull
+header "GitHub Deleting Prior Release $project $version"
+curl -X DELETE https://api.github.com/repos/$github_user/${project}-docker/releases/v$version?access_token=$github_token || true
+
+header "Git Deleting Prior Tag $project $version"
 if [[ `git tag | grep -F "v$version"` != '' ]]; then
   git tag -d "v$version" || true
 fi
+git push origin ":v$version" || true
+
+header "Git Tagging $project $version"
+git add .env
+git commit -m "Updating .env with version $version"
 git tag -m "From $driver_pretty $version" "v$version"
-git push origin ":v$version" || git push origin "v$version"
-git checkout .env
+git push origin "v$version"
 
 header "GitHub Releasing $project $version"
-curl -X DELETE https://api.github.com/repos/$github_user/${project}-docker/releases/v$version?access_token=$github_token || true
 curl --data '{"tag_name": "v'"$version"'","target_commitish": "master","name": "From '"$driver_pretty"' v'"$version"'","draft": false,"prerelease": false}' \
   https://api.github.com/repos/$github_user/${project}-docker/releases?access_token=$github_token
 

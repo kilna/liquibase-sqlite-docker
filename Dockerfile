@@ -2,7 +2,7 @@ FROM kilna/liquibase
 LABEL maintainer="Kilna kilna@kilna.com"
 
 ARG jdbc_driver_version
-ENV jdbc_driver_version=${jdbc_driver_version:-3.20.0}\
+ENV jdbc_driver_version=${jdbc_driver_version:-3.21.0}\
     jdbc_driver_download_url=https://bitbucket.org/xerial/sqlite-jdbc/downloads\
     LIQUIBASE_CLASSPATH=${LIQUIBASE_CLASSPATH:-/opt/jdbc/sqlite-jdbc.jar}\
     LIQUIBASE_DRIVER=${LIQUIBASE_DRIVER:-org.sqlite.JDBC}\

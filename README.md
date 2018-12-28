@@ -16,7 +16,7 @@ DockerHub: [liquibase-sqlite](https://hub.docker.com/r/kilna/liquibase-sqlite/) 
 You can use this image by creating your own `Dockerfile` which inherits using a FROM line:
 
 ```
-FROM kilna/liquibase-sqlite-docker
+FROM kilna/liquibase-sqlite
 ENV LIQUIBASE_DATABASE=dbname.db
 COPY changelog.xml /workspace
 COPY dbname.db /workspace
